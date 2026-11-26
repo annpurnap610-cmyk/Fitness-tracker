@@ -15,9 +15,10 @@ class WorkoutRepository(context: Context, private val userId: String) {
         context.getString(R.string.firestore_database_id)
     )
 
-    private val workoutsRef = db.collection("users").document(userId).collection("workouts")
-    private val exercisesRef = db.collection("users").document(userId).collection("exercises")
-    private val routinesRef = db.collection("users").document(userId).collection("routines")
+    private val safeUserId = if (userId.isBlank()) "guest" else userId
+    private val workoutsRef = db.collection("users").document(safeUserId).collection("workouts")
+    private val exercisesRef = db.collection("users").document(safeUserId).collection("exercises")
+    private val routinesRef = db.collection("users").document(safeUserId).collection("routines")
 
     fun observeWorkouts(): Flow<List<Workout>> = callbackFlow {
         if (userId.isBlank()) {

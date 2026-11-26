@@ -28,18 +28,28 @@ import kotlinx.coroutines.launch
 @Composable
 fun ActiveWorkoutScreen(
     initialTitle: String = "Upper Body Workout",
+    initialRoutine: com.example.data.Routine? = null,
     onSaveWorkout: (Workout) -> Unit,
     onCancel: () -> Unit
 ) {
-    var workoutTitle by remember { mutableStateOf(initialTitle) }
+    var workoutTitle by remember { mutableStateOf(initialRoutine?.name ?: initialTitle) }
     var notes by remember { mutableStateOf("") }
     var exercises by remember { mutableStateOf(
-        mutableListOf(
-            WorkoutExercise(
-                exerciseName = "Barbell Bench Press",
-                mutableListOf(ExerciseSet(1, 70.0, 10, 8.0), ExerciseSet(2, 75.0, 8, 8.5))
+        if (initialRoutine != null && initialRoutine.exercises.isNotEmpty()) {
+            initialRoutine.exercises.map { exName ->
+                WorkoutExercise(
+                    exerciseName = exName,
+                    sets = mutableListOf(ExerciseSet(1, 60.0, 10, 8.0))
+                )
+            }.toMutableList()
+        } else {
+            mutableListOf(
+                WorkoutExercise(
+                    exerciseName = "Barbell Bench Press",
+                    sets = mutableListOf(ExerciseSet(1, 70.0, 10, 8.0), ExerciseSet(2, 75.0, 8, 8.5))
+                )
             )
-        )
+        }
     ) }
 
     var secondsElapsed by remember { mutableIntStateOf(0) }
