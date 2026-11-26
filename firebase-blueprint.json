@@ -1,0 +1,41 @@
+{
+  "entities": {
+    "Workout": {
+      "path": "users/{userId}/workouts/{workoutId}",
+      "ownerField": "userId",
+      "schema": {
+        "id": "string",
+        "userId": "string",
+        "title": "string",
+        "dateMillis": "number",
+        "durationMinutes": "number",
+        "notes": "string",
+        "createdAt": "timestamp"
+      }
+    },
+    "ExercisePR": {
+      "path": "users/{userId}/exercises/{exerciseId}",
+      "ownerField": "userId",
+      "schema": {
+        "id": "string",
+        "userId": "string",
+        "name": "string",
+        "category": "string",
+        "personalBestWeight": "number",
+        "personalBestReps": "number",
+        "updatedAt": "timestamp"
+      }
+    },
+    "Routine": {
+      "path": "users/{userId}/routines/{routineId}",
+      "ownerField": "userId",
+      "schema": {
+        "id": "string",
+        "userId": "string",
+        "name": "string",
+        "description": "string",
+        "createdAt": "timestamp"
+      }
+    }
+  }
+}

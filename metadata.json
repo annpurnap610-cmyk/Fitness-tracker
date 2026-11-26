@@ -1,0 +1,6 @@
+{
+  "name": "ApexFit",
+  "description": "Professional gym fitness tracker and workout logger with personal bests, progress charts, and AI workout coach.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
