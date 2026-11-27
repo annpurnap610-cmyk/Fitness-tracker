@@ -18,6 +18,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Temurin Java 17
         uses: actions/setup-java@v4
@@ -61,12 +63,13 @@ jobs:
 
       - name: Create temporary debug keystore
         run: |
-          if [ -f "./debug.keystore" ]; then
-            echo "debug.keystore already exists."
+          KEYSTORE_PATH="./debug.keystore"
+          if [ -f "$KEYSTORE_PATH" ]; then
+            echo "debug.keystore already exists at $KEYSTORE_PATH."
           else
-            echo "Generating debug.keystore..."
+            echo "Generating robust debug.keystore..."
             keytool -genkeypair -v \
-              -keystore ./debug.keystore \
+              -keystore "$KEYSTORE_PATH" \
               -storepass android \
               -alias androiddebugkey \
               -keypass android \
@@ -74,16 +77,21 @@ jobs:
               -keysize 2048 \
               -validity 10000 \
               -dname "CN=Android Debug,O=Android,C=US"
-            if [ ! -f "./debug.keystore" ]; then
+            if [ ! -f "$KEYSTORE_PATH" ]; then
               echo "Error: Failed to create debug.keystore."
               exit 1
             fi
-            echo "debug.keystore generated successfully."
+            echo "debug.keystore successfully generated and verified."
           fi
 
       - name: Build Debug APK
         run: |
           gradle :app:assembleDebug --stacktrace --no-daemon
+
+      - name: Debug Output Directory Structure
+        run: |
+          echo "=== Inspecting build outputs via ls -R ==="
+          ls -R app/build/outputs/apk || true
 
       - name: Verify APK existence
         run: |
@@ -124,7 +132,7 @@ jobs:
           
           echo "asset_path=release_asset_dir/$ASSET_NAME" >> $GITHUB_OUTPUT
           echo "asset_name=$ASSET_NAME" >> $GITHUB_OUTPUT
-          echo "Prepared release asset: $ASSET_NAME"
+          echo "Prepared release asset: release_asset_dir/$ASSET_NAME"
 
       - name: Publish APK to GitHub Releases
         id: publish_release
